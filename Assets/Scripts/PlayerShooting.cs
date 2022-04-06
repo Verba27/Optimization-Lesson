@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
@@ -18,19 +19,19 @@ public class PlayerShooting : MonoBehaviour
 
 	float timer;
 
-	private List<GameObject> bulletPool;
+	private GameObject[] bulletPool;
 	[SerializeField] private GameObject bulletParanet;
 	private int pooledAmount = 1000;
 
 	void Start()
 	{
-		bulletPool = new List<GameObject>();
+		bulletPool = new GameObject[pooledAmount];
 		for (int i = 0; i < pooledAmount; i++)
 		{
 			GameObject createdObj = (GameObject)Instantiate(bulletPrefab);
 			createdObj.transform.SetParent(bulletParanet.transform);
 			createdObj.SetActive(false);
-			bulletPool.Add(createdObj);
+			bulletPool[i] = createdObj;
 		}
 		
 	}
@@ -63,7 +64,7 @@ public class PlayerShooting : MonoBehaviour
 
 	void SpawnBullet(Vector3 rotation)
 	{
-		for (int j = 0; j < bulletPool.Count; j++)
+		for (int j = 0; j < bulletPool.Length; j++)
 		{
 			if (!bulletPool[j].activeInHierarchy)
 			{
@@ -89,8 +90,8 @@ public class PlayerShooting : MonoBehaviour
 			for (int y = min; y < max; y++)
 			{
 				tempRot.y = (rotation.y + 3 * y) % 360;
-				
-				var bullet = bulletPool.Find(j => !j.activeInHierarchy);
+
+				var bullet = Array.Find(bulletPool, j => !j.activeInHierarchy);
 				bullet.SetActive(true);
 						
 				bullet.transform.position = gunBarrel.position;
